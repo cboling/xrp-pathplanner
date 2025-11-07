@@ -1,0 +1,24 @@
+# ------------------------------------------------------------------------ #
+#      o-o      o                o                                         #
+#     /         |                |                                         #
+#    O     o  o O-o  o-o o-o     |  oo o--o o-o o-o                        #
+#     \    |  | |  | |-' |   \   o | | |  |  /   /                         #
+#      o-o o--O o-o  o-o o    o-o  o-o-o--O o-o o-o                        #
+#             |                           |                                #
+#          o--o                        o--o                                #
+#                        o--o      o         o                             #
+#                        |   |     |         |  o                          #
+#                        O-Oo  o-o O-o  o-o -o-    o-o o-o                 #
+#                        |  \  | | |  | | |  |  | |     \                  #
+#                        o   o o-o o-o  o-o  o  |  o-o o-o                 #
+#                                                                          #
+#    Jemison High School - Huntsville Alabama                              #
+# ------------------------------------------------------------------------ #
+#
+# Does the same thing as python -m robotpy init.  Just makes it easy here
+# if we want to create a virtual enviornment for the project
+#
+robotpy                == 2025.3.2.2       # Main module and CLI for the robotics platform
+robotpy-commands-v2    == 2025.3.2
+robotpy-pathplannerlib == 2025.2.7
+robotpy-xrp            == 2025.3.2.2
