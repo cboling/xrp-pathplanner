@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ------------------------------------------------------------------------ #
 #      o-o      o                o                                         #
 #     /         |                |                                         #
@@ -14,14 +15,18 @@
 #                                                                          #
 #    Jemison High School - Huntsville Alabama                              #
 # ------------------------------------------------------------------------ #
-#
-# Does the same thing as python -m robotpy init. Just makes it easy here
-# if we want to create a virtual environment for the project
-#
-robotpy                  == 2025.3.2.2       # Main module and CLI for the robotics platform
-robotpy-commands-v2      == 2025.3.2
-robotpy-pathplannerlib   == 2025.2.7
-robotpy-xrp              == 2025.3.2.2
-robotpy-halsim-ds-socket == 2025.3.2.2      # For the simulator
-robotpy-halsim-gui       == 2025.3.2.2
-robotpy-halsim-ws        == 2025.3.2.2
+# load local python virtualenv if exists
+FRC_YEAR=${FRC_YEAR:-2026}
+VENVDIR=${VENVDIR:-venv-${FRC_YEAR}}
+PYVERSION=${PYVERSION:-"3.13"}
+
+if [ -e "${VENVDIR}/.built" ]; then
+    . $VENVDIR/bin/activate
+else
+   echo "Creating python development environment"
+   pip install --disable-pip-version-check virtualenv
+ 	 python3 -m virtualenv --python=python${PYVERSION} -v ${VENVDIR} &&\
+        source ./${VENVDIR}/bin/activate && set -u && \
+        pip install --disable-pip-version-check -r requirements-${FRC_YEAR}.txt && \
+        date > ${VENVDIR}/.built
+fi

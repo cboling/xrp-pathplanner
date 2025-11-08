@@ -19,6 +19,3 @@
 # if we want to create a virtual enviornment for the project
 #
 robotpy                == 2025.3.2.2       # Main module and CLI for the robotics platform
-robotpy-commands-v2    == 2025.3.2
-robotpy-pathplannerlib == 2025.2.7
-robotpy-xrp            == 2025.3.2.2

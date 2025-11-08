@@ -15,13 +15,8 @@
 #    Jemison High School - Huntsville Alabama                              #
 # ------------------------------------------------------------------------ #
 #
-# Does the same thing as python -m robotpy init. Just makes it easy here
-# if we want to create a virtual environment for the project
+#  Version file:  Format is   YEAR.MM.DD[.build] where the .build is
+#                 optional and should a period plus an incrementing number
+#                 starting at 1
 #
-robotpy                  == 2025.3.2.2       # Main module and CLI for the robotics platform
-robotpy-commands-v2      == 2025.3.2
-robotpy-pathplannerlib   == 2025.2.7
-robotpy-xrp              == 2025.3.2.2
-robotpy-halsim-ds-socket == 2025.3.2.2      # For the simulator
-robotpy-halsim-gui       == 2025.3.2.2
-robotpy-halsim-ws        == 2025.3.2.2
+VERSION = "2025.11.07"
