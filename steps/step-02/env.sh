@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ------------------------------------------------------------------------ #
 #      o-o      o                o                                         #
 #     /         |                |                                         #
@@ -14,14 +15,18 @@
 #                                                                          #
 #    Jemison High School - Huntsville Alabama                              #
 # ------------------------------------------------------------------------ #
-#
-# Constants for source in this subdirectory will go here
+# load local python virtualenv if exists
+FRC_YEAR=${FRC_YEAR:-2026}
+VENVDIR=${VENVDIR:-venv-${FRC_YEAR}}
+PYVERSION=${PYVERSION:-"3.13"}
 
-
-class IOConstants:
-    # Fror controller ports, us a negative number if you do not want it configured
-    DRIVER_CONTROLLER_PORT = 0
-    OPERATOR_CONTROLLER_PORT = 1
-
-    DRIVE_DEADBAND= 0.05
-
+if [ -e "${VENVDIR}/.built" ]; then
+    . $VENVDIR/bin/activate
+else
+   echo "Creating python development environment"
+   pip install --disable-pip-version-check virtualenv
+ 	 python3 -m virtualenv --python=python${PYVERSION} -v ${VENVDIR} &&\
+        source ./${VENVDIR}/bin/activate && set -u && \
+        pip install --disable-pip-version-check -r requirements-${FRC_YEAR}.txt && \
+        date > ${VENVDIR}/.built
+fi

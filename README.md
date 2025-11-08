@@ -203,6 +203,10 @@ be based on an XRP, but the actual deal. That project will also follow this same
 hopefully will be helpful to other FRC Teams in the 2026 competition as well as the future.
 
 ## Step-1: Errors Encountered
+Here are some errors I have encountered, if you encounter any others, hopefully with a
+solution, please let me know.
+
+### GLFW Error 65543: GLX: Failed to create context: GLXBadFBConfig
 If when you run your **robotpy sim** you get the following error:
 ```text
 HAL Extensions: Attempting to load: libhalsim_gui
@@ -221,6 +225,35 @@ If you are running on WSL, then it may not be able to show the Glass Tools
 # Step-2: Hook up a controller
 - [X] Begin improvements to connect up a controller/joystick
 
+For this step, I plan to create use the conroller that uses a keyboard since
+it is a quick way to make it work with the XRP and most everyone should
+have access to one. If you are working on a laptop without a numerical
+keypad (see picture below), you may be able to borrow a USB one and get it
+to work with your laptop.
+![numerical keypad](steps/images/step-2-keyboard.png "Keypad as a Controller")
+
+The keypad will use the number keys (in <span style="color: red;">) are the
+joystick with the numbers as the joystick direction. For instance **8** is up/forward,
+and **6** is right, and on.
+
+Now run the simulator with the following command. Once it is running, use your mouse
+to drag the **System Joysticks**/_Keyboard 0_ over to the **Joysticks** dialog and drop
+it on the _Joysticks[0]_ list item. That will define the driver controller.
+
+```shell
+robotpy sim
+```
+The following video demonstrates how to assign a keyboard in the simulator to the
+Joystick 0 controller.
+![Assign keyboard as Joystick 0](steps/images/step-3-making-the-keyboard-be-a-joystick.mp4 "Keypad is a Joystick")
+[Assign keyboard as Joystick 0](steps/images/step-3-making-the-keyboard-be-a-joystick.mp4)
+
+Once assigned, you can press the 1-9 buttons on the keyboard to simulate moving a
+joystick.  As you press the keys, the **POVs[0]** line under Joystick[0] reads
+out the degrees for each of the keyboard buttons. A value of -1 specifies that
+no keys are pressed (the joystick is in the center/neutral position)
+![Moving the joystick](steps/images/step-3-moving-the-joystick-with-the-keys.mp4 "Moving the Joystick")
+[Moving the joystick](steps/images/step-3-moving-the-joystick-with-the-keys.mp4)
 
 # Step-3: Lets get the robot to move
 - [X] Get the robot to actually move
@@ -229,6 +262,68 @@ So far, even if we downloaded the code in Step 2, the robot will not move and so
 GUI was our only option. In this step, we will create a drive subsystem, in its basic and
 most simple form, and tie it to the controller so we can get the robot to move.
 
+In the code, we actually are using the **Joystick** object, but when we run under the
+simulator, we will link our keyboard as the joystick driver.
+
+
+
+## Step-3: Errors Encountered
+Here are some errors I have encountered, if you encounter any others, hopefully with a
+solution, please let me know.
+
+### GLFW Error 65543: GLX: Failed to create context: GLXBadFBConfig
+If when you run your **robotpy sim** you get the following error:
+```text
+HAL Extensions: Attempting to load: libhalsim_gui
+Simulator GUI Initializing.
+GLFW Error 65543: GLX: Failed to create context: GLXBadFBConfig
+```
+Then you may need to upgrade your OpenGL support to 3.3 or higher. On Linux you can
+run the following command
+```shell
+# If you do not have the 'glxinfo' tool, you can install it with 'sudo apt install mesa-utils'
+
+glxinfo | grep opengl
+```
+If you are running on WSL, then it may not be able to show the Glass Tools
+
+### ModuleNotFoundError: No module named 'native.xrp
+When running **robotypy** _sim_, you encounter an error similar to below
+
+```shell
+$ robotpy sim
+WARNING: Error detected in EntryPoint(name='xrp', value='xrp.extension', group='robotpysimext')
+08:43:52:813 INFO    : faulthandler        : registered SIGUSR2 for PID 214696
+ERROR: importing /opt/repos/cboling/xrp-pathplanner/robot/robot.py failed!
+Traceback (most recent call last):
+  File "/opt/repos/cboling/xrp-pathplanner/robot/venv-2026/lib/python3.13/site-packages/robotpy/main.py", line 68, in _load_robot_class
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/repos/cboling/xrp-pathplanner/robot/robot.py", line 28, in <module>
+    from frc_2026.robotcontainer import RobotContainer
+  File "/opt/repos/cboling/xrp-pathplanner/robot/frc_2026/robotcontainer.py", line 26, in <module>
+    from frc_2026.subsystems.xrp_differential_drive import XrpDifferentialDriveSubsystem
+  File "/opt/repos/cboling/xrp-pathplanner/robot/frc_2026/subsystems/xrp_differential_drive.py", line 25, in <module>
+    import xrp
+  File "/opt/repos/cboling/xrp-pathplanner/robot/venv-2026/lib/python3.13/site-packages/xrp/__init__.py", line 1, in <module>
+    from . import _init__xrp
+  File "/opt/repos/cboling/xrp-pathplanner/robot/venv-2026/lib/python3.13/site-packages/xrp/_init__xrp.py", line 4, in <module>
+    import native.xrp._init_robotpy_native_xrp
+ModuleNotFoundError: No module named 'native.xrp'
+```
+The reason for this seems to come from the version of the **robotpy-xrp** package. At the time
+of this writing, the **robotpy** version was 2025.3.2.2 and the robotpy package was of the
+same version. There is now a version 2025.3.2.3 of **robotpy-xrp** available, but you cannot
+install it via **pip*** or the _pyproject.toml__ method with the **robotpy sync** command due
+to version restrictions.
+
+Instead, after any time you _sync_ your modules remember to run the following command
+
+```shell
+pip install -U robotpy-xrp
+```
 # Step-4: Makefiles and the CLI
 - [X] Setting up a Makefile to allow you shell environment to be simple to use
 
@@ -259,3 +354,5 @@ most simple form, and tie it to the controller so we can get the robot to move.
  - [Command](https://robotpy.readthedocs.io/projects/commands-v2/en/stable/commands2/Command.html) - robotpy 'Command' class
  - [Simulation GUI](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html#simulation-specific-user-interface-elements)
  - [glass GUI Application](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/index.html)
+
+https://experientialrobotics.org/drive-an-xrp-robot-with-pestolink/

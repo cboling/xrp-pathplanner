@@ -15,13 +15,4 @@
 #    Jemison High School - Huntsville Alabama                              #
 # ------------------------------------------------------------------------ #
 #
-# Constants for source in this subdirectory will go here
-
-
-class IOConstants:
-    # Fror controller ports, us a negative number if you do not want it configured
-    DRIVER_CONTROLLER_PORT = 0
-    OPERATOR_CONTROLLER_PORT = 1
-
-    DRIVE_DEADBAND= 0.05
-
+# Constants for source in this subdictory will go here
