@@ -41,6 +41,7 @@ class MyRobot(TimedCommandRobot):
 
         # Define / initialize all of our class variables
         self._container: Optional[RobotContainer] = None
+        self._counter = 0
 
     def robotInit(self) -> None:
         """
@@ -62,6 +63,10 @@ class MyRobot(TimedCommandRobot):
         # autonomous chooser on the dashboard.
         self._container = RobotContainer()
 
+    @property
+    def container(self) -> RobotContainer:
+        return self._container
+
     def robotPeriodic(self) -> None:
         """
         Periodic code for all modes should go here.
@@ -69,7 +74,7 @@ class MyRobot(TimedCommandRobot):
         This function is called each time a new packet is received from the driver
         station.
         """
-        pass
+        self._counter += 1
 
     def disabledInit(self) -> None:
         """
@@ -78,7 +83,7 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for initialization code which will be
         called each time the robot enters disabled mode.
         """
-        pass
+        logger.info("disabledInit: entry")
 
     def disabledPeriodic(self) -> None:
         """
@@ -97,7 +102,7 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for code which will be called each time
         the robot exits disabled mode.
         """
-        pass
+        logger.info("disabledExit: entry")
 
     def autonomousInit(self) -> None:
         """
@@ -106,6 +111,8 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for initialization code which will be
         called each time the robot enters autonomous mode.
         """
+        logger.info("autonomousInit: entry")
+
         command = self._container.get_autonomous_command()
         if command:
             command.schedule()
@@ -127,6 +134,8 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for code which will be called each time
         the robot exits autonomous mode.
         """
+        logger.info("autonomousExit: entry")
+
         command = self._container.get_autonomous_command()
         if command:
             command.cancel()
@@ -138,6 +147,8 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for initialization code which will be
         called each time the robot enters teleop mode.
         """
+        logger.info("teleopInit: entry")
+
         command = self._container.get_autonomous_command()
         if command:
             command.cancel()
@@ -151,6 +162,24 @@ class MyRobot(TimedCommandRobot):
         mode.
         """
         pass
+        # Drive with arcade drive.
+        controller = self._container.controller
+
+        # For the keyboard operating as a joystick, the following keys on the
+        # left of the keyboard mean:
+        #
+        #  w  : Speed:    Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  s  : Speed:    Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward 1.0
+        #  a  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  d  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                at 0.0 and increases toward 1.0
+        #
+        speed, rotation = -controller.getY(), controller.getX()
+        self._container.drive.arcadeDrive(speed, rotation)
+
 
     def teleopExit(self) -> None:
         """
@@ -168,6 +197,8 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for initialization code which will be
         called each time the robot enters test mode.
         """
+        logger.info("testInit: entry")
+
         CommandScheduler.getInstance().cancelAll()
 
     def testPeriodic(self):
@@ -187,7 +218,7 @@ class MyRobot(TimedCommandRobot):
         Users should override this method for code which will be called each time
         the robot exits test mode.
         """
-        pass
+        logger.info("testExit: entry")
 
     def _simulationInit(self) -> None:
         """
@@ -198,7 +229,7 @@ class MyRobot(TimedCommandRobot):
         started. It will be called exactly one time after RobotInit is called
         only when the robot is in simulation.
         """
-        pass
+        logger.info("_simulationInit: entry")
 
     def _simulationPeriodic(self):
         """
@@ -206,18 +237,3 @@ class MyRobot(TimedCommandRobot):
 
         This function is called in a simulated robot after user code executes.
         """
-        pass
-
-""""
-Main CLI entry point. Run the MyRobot class via the wpilib 'run' command
-
-  ``wpilib.run`` is no longer used. You should run your robot code via one of
-the following methods instead:
-
-* Windows: ``py -m robotpy [arguments]``
-* Linux/macOS: ``python -m robotpy [arguments]``
-
-In a virtualenv the ``robotpy`` command can be used directly.
-
-If you are running under the PyCharm IDE: You
-"""

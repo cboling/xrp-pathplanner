@@ -18,12 +18,13 @@
 import logging
 import time
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from commands2.command import Command
 from wpilib import RobotBase, DriverStation, Joystick
 
 from frc_2026.constants import IOConstants
+from frc_2026.subsystems.xrp_differential_drive import XrpDifferentialDriveSubsystem
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,8 @@ class RobotContainer:
     subsystems, commands, and button mappings) should be declared here.
     """
     def __init__(self) -> None:
+        logger.info("__init__: entry")
+
         self.start_time = time.time()       # Will be useful for logging / telemetry message in the future
 
         if RobotBase.isSimulation():
@@ -44,10 +47,13 @@ class RobotContainer:
         # Command(s) to run when in Autonomous Mode
         self._autonomous_command: Optional[Command] = None
 
-        # TODO: Initialize the robot's subsystems
+        # Initialize the robot's subsystems
+        self._drive = XrpDifferentialDriveSubsystem()
 
         # Initialize and then configure the controllers
         self._driver_controller, self._operator_controller = self._configure_controller()
+        # Initialize and then configure the controller
+        self._driver_controller: Joystick = self._configure_controller()    # If single joystick
 
         # TODO: Register the commands
 
@@ -56,6 +62,14 @@ class RobotContainer:
         # TODO: Preload/parse the pathfinder command
 
         # TODO: Perform any other variable/object initialization
+
+    @property
+    def controller(self) -> Joystick:
+        return self._driver_controller
+
+    @property
+    def drive(self) -> XrpDifferentialDriveSubsystem:
+        return self._drive
 
     def set_start_time(self):  # call in teleopInit and autonomousInit in the robot
         self.start_time = time.time()
@@ -84,21 +98,56 @@ class RobotContainer:
         """
         return self._autonomous_command
 
-    def _configure_controller(self) -> Tuple[Joystick | None, Joystick | None]:
+    def _configure_controller(self) -> Joystick:
         """
         Use this command to configure your robot controller(s)
 
         :return: Tuple containing the driver and operator controllers
         """
-        driver_controller = Joystick(IOConstants.DRIVER_CONTROLLER_PORT) \
-            if IOConstants.DRIVER_CONTROLLER_PORT > 0 else None
+        driver_controller = Joystick(IOConstants.DRIVER_CONTROLLER_PORT)
 
-        operator_controller = Joystick(IOConstants.OPERATOR_CONTROLLER_PORT) \
-            if IOConstants.OPERATOR_CONTROLLER_PORT > 0 else None
+        # For simulation using the keyboard
+        #
+        #  w  : Forward:  Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  s  : Backward: Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward 1.0
+        #  a  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  d  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                at 0.0 and increases toward 1.0
+        #
+        ###############
+        # Buttons are the 'z', 'x', 'c', and 'v'.  TODO: Currently do not know the names, assume z is Button 1
 
         # TODO: Configure the button bindings on the keyboard for other operations
         #       or command we need.
 
-        # Return as a Tuple. If one is not needed, just pass back 'None' and the
-        # code that works on them will ignore that controller
-        return driver_controller, operator_controller
+        return driver_controller
+
+    def _secondary_controller(self) -> Joystick:
+        """
+        Use this command to configure your robot controller(s)
+
+        :return: Tuple containing the driver and operator controllers
+        """
+        driver_controller = Joystick(IOConstants.OPERATOR_CONTROLLER_PORT)
+
+        # For simulation using the keyboard
+        #
+        #  i  : Forward:  Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  k  : Backward: Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward 1.0
+        #  j  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                 at 0.0 and increases toward -1.0
+        #  l  : Rotation: Increases as it is held, decreases after it releases. Starts
+        #                at 0.0 and increases toward 1.0
+        #
+        ###############
+        # Buttons are the 'z', 'x', 'c', and 'v'.  TODO: Currently do not know the names, assume z is Button 1
+
+        # TODO: Configure the button bindings on the keyboard for other operations
+        #       or command we need.
+
+        return driver_controller

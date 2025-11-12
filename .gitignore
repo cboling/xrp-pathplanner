@@ -78,6 +78,7 @@ networktables.json
 simgui.json
 *-window.json
 *simgui-ds.json
+.backup
 
 # Simulation data log directory
 logs/
